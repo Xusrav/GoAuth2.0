@@ -1,0 +1,102 @@
+{{template "base" . }}
+{{define "body"}}
+    <div class="container">
+
+        <h4>Это Мой финальный проект)</h4>
+        <br><br><br><br>
+        <div>
+            <h1><a href="/login">Google OAUTH2.0</a></h1>
+        </div>
+        <br><br><br><br>
+        <div class="row">
+            <div class="col"><h1>Second Project</h1></div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form action="/search" method="post"
+                      enctype="multipart/form-data">
+                    <fieldset>
+                        <legend>By ID</legend>
+                    </fieldset>
+                    <div>
+                        <input type="hidden" name="action" value="search">
+                        <input type="hidden" name="by" value="id">
+                        <label>По id:</label><input name="i" type="text" required>
+                        <label>Год:</label><input name="y" type="text">
+                        <select name="plot" style="width: 100px;">
+                            <option value="short" selected="">Short</option>
+                            <option value="full">Full</option>
+                        </select>
+                        <select name="r" style="width: 100px;">
+                            <option value="json" selected="">Json</option>
+                            <option value="xml">XML</option>
+                        </select>
+                        <button>Search</button>
+                        <button id="search-by-title-reset" type="reset" class="btn-sm">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="bs-component">
+            <form class="well form-search" id="search-by-title-form" action="/search" method="post"
+                  enctype="multipart/form-data">
+                <fieldset>
+                    <legend>By Title</legend>
+                </fieldset>
+                <div>
+                    <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="by" value="title">
+                    <label>По title:</label><input name="t" type="text" required>
+                    <label>Тип</label><select name="type" style="width: 100px;">
+                        <option value="" selected="">Выберите</option>
+                        <option value="movie">Movie</option>
+                        <option value="series">Series</option>
+                        <option value="episode">Episode</option>
+                    </select>
+                    <label>Год:</label><input name="y" type="text">
+                    <select name="plot" style="width: 100px;">
+                        <option value="short" selected="">Short</option>
+                        <option value="full">Full</option>
+                    </select>
+                    <select name="r" style="width: 100px;">
+                        <option value="json" selected="">Json</option>
+                        <option value="xml">XML</option>
+                    </select>
+                    <button>Search</button>
+                    <button id="search-by-title-reset" type="reset" class="btn-sm">Reset</button>
+                </div>
+            </form>
+        </div>
+        <div class="bs-component">
+            <form class="well form-search" id="search-by-title-form" action="/search" method="post"
+                  enctype="multipart/form-data">
+                <fieldset>
+                    <legend>By Search</legend>
+                </fieldset>
+                <div>
+                    <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="by" value="search">
+                    <label>По Search:</label><input name="s" type="text" required>
+                    <label>Тип</label><select name="type" style="width: 100px;">
+                        <option value="" selected="">Выберите</option>
+                        <option value="movie">Movie</option>
+                        <option value="series">Series</option>
+                        <option value="episode">Episode</option>
+                    </select>
+                    <label>Год:</label><input name="y" type="text">
+                    <select name="plot" style="width: 100px;">
+                        <option value="short" selected="">Short</option>
+                        <option value="full">Full</option>
+                    </select>
+                    <select name="r" style="width: 100px;">
+                        <option value="json" selected="">Json</option>
+                        <option value="xml">XML</option>
+                    </select>
+                    <label>Page</label><input type="number" name="page" min="0">
+                    <button>Search</button>
+                    <button id="search-by-title-reset" type="reset" class="btn-sm">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{{end}}

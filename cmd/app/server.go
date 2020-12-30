@@ -20,7 +20,7 @@ func (s *Server) Run(){
 	http.HandleFunc("/", h.HandleMain)
 	http.HandleFunc("/login", h.HandleGoogleLogin)
 	http.HandleFunc("/redirect", h.HandleGoogleCallback)
-
+	http.HandleFunc("/search", h.HandleSearch)
 	panic(http.ListenAndServe(config.Host + ":" + config.Port, nil))
 }
 

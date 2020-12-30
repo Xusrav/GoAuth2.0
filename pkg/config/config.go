@@ -7,14 +7,11 @@ import (
 	"github.com/creamdog/gonfig"
 )
 
-
 var (
-	ClientID, ClientSecret, Host, Port string
-
+	ClientID, ClientSecret, Host, Port, URLomdbApi, ApiKey string
 )
 
-
-func init(){
+func init() {
 
 	f, err := os.Open("../configs/config.json")
 	if err != nil {
@@ -39,6 +36,16 @@ func init(){
 		log.Print(err)
 	}
 	Port, err = config.GetString("port", "9999")
+	if err != nil {
+		log.Print(err)
+	}
+
+	URLomdbApi, err = config.GetString("url_omdb", "")
+	if err != nil {
+		log.Print(err)
+	}
+
+	ApiKey, err = config.GetString("api_key", "")
 	if err != nil {
 		log.Print(err)
 	}
