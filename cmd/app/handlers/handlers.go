@@ -14,22 +14,25 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
+
 var (
 	googleOauthConfig *oauth2.Config
-	outhStateString = "pseudo-random"
+	outhStateString   = "pseudo-random"
 )
 
+// Handler пустая связывающая по DI структура
 type Handler struct {
 }
 
+// NewHandler по ней будут созданы методы
 func NewHandler() *Handler {
 	return &Handler{}
 }
 
 func init() {
-	redirectUrl := "http://"+config.Host+":"+config.Port+"/redirect"
+	redirectURL := "http://" + config.Host + ":" + config.Port + "/redirect"
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  redirectUrl,
+		RedirectURL:  redirectURL,
 		ClientID:     config.ClientID,
 		ClientSecret: config.ClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
@@ -37,46 +40,48 @@ func init() {
 	}
 }
 
-func (h *Handler)HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
+// HandleGoogleLogin логин в гугл аккаунт
+func (h *Handler) HandleGoogleLogin(writer http.ResponseWriter, response *http.Request) {
 	url := googleOauthConfig.AuthCodeURL(outhStateString)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	http.Redirect(writer, response, url, http.StatusTemporaryRedirect)
 }
 
-func (h *Handler)HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
-	content, err := h.getUserInfo(r.FormValue("state"), r.FormValue("code"))
+// HandleGoogleCallback скидывает обратно в нужную страницу после авторизации
+func (h *Handler) HandleGoogleCallback(writer http.ResponseWriter, request *http.Request) {
+	content, err := h.getUserInfo(request.FormValue("state"), request.FormValue("code"))
 	if err != nil {
 		fmt.Println(err.Error())
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(writer, request, "/", http.StatusTemporaryRedirect)
 		return
 	}
-	fmt.Fprintf(w, "Content: %s\n", content)
+	fmt.Fprintf(writer, "Content: %s\n", content)
 }
 
-
-func (h *Handler)HandleSearch(w http.ResponseWriter, r *http.Request) {
-	getParamFromRequestFormData(r)
+// HandleSearch ищет данные фильма на omdbapi
+func (h *Handler) HandleSearch(writer http.ResponseWriter, request *http.Request) {
+	getParamFromRequestFormData(request)
 	param := ""
 	if by == "id" {
 		if id == "" {
-			w.WriteHeader(404)
-			w.Write([]byte("Неправильный запорс"))
+			writer.WriteHeader(404)
+			writer.Write([]byte("Неправильный запорс"))
 			return
 		}
 		param = "&i=" + id
 	} else if by == "title" {
 		if title == "" {
-			w.WriteHeader(404)
-			w.Write([]byte("Неправильный запорс"))
+			writer.WriteHeader(404)
+			writer.Write([]byte("Неправильный запорс"))
 			return
 		}
-		param= "&t=" + title
+		param = "&t=" + title
 	} else if by == "search" {
 		if s == "" {
-			w.WriteHeader(404)
-			w.Write([]byte("Неправильный запорс"))
+			writer.WriteHeader(404)
+			writer.Write([]byte("Неправильный запорс"))
 			return
 		}
-		param= "&s=" + s
+		param = "&s=" + s
 	}
 
 	if year != "" {
@@ -88,34 +93,33 @@ func (h *Handler)HandleSearch(w http.ResponseWriter, r *http.Request) {
 	if typeData != "" {
 		param += "&r=" + typeData
 	}
-
 	if typeMovie != "" {
 		param += "&type=" + typeMovie
 	}
-
 	if page != "" {
 		param += "&page=" + page
 	}
 
-	url := config.URLomdbApi+"?apikey=" + config.ApiKey
+	url := config.URLomdbApi + "?apikey=" + config.ApiKey
 
-	log.Println(url+param)
-	post, err := req.Get(url+param)
+	log.Println(url + param)
+	post, err := req.Get(url + param)
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte("Ошибка сервера"))
+		writer.WriteHeader(500)
+		writer.Write([]byte("Ошибка сервера"))
 		return
 	}
 
-	if typeData !="xml"{
-		w.Header().Set("Content-type", "application/json")
-	}else {
-		w.Header().Set("Content-type", "application/xml")
+	if typeData != "xml" {
+		writer.Header().Set("Content-type", "application/json")
+	} else {
+		writer.Header().Set("Content-type", "application/xml")
 	}
-	w.Write(post.Bytes())
+	writer.Write(post.Bytes())
 	return
 }
-func (h *Handler)getUserInfo(state string, code string) ([]byte, error) {
+
+func (h *Handler) getUserInfo(state string, code string) ([]byte, error) {
 	if state != outhStateString {
 		return nil, fmt.Errorf("invalid oauth state")
 	}
@@ -135,7 +139,8 @@ func (h *Handler)getUserInfo(state string, code string) ([]byte, error) {
 	return contents, nil
 }
 
-func (h *Handler)HandleMain(w http.ResponseWriter, r *http.Request) {
+// HandleMain главная открывающаяся страница
+func (h *Handler) HandleMain(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
 
 	tpl, err := template.ParseFiles(
@@ -148,7 +153,6 @@ func (h *Handler)HandleMain(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 }
-
 
 var by, id, year, plot, typeData, s, page, title, typeMovie string
 
