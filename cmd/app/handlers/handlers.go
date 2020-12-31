@@ -64,21 +64,21 @@ func (h *Handler) HandleSearch(writer http.ResponseWriter, request *http.Request
 	if by == "id" {
 		if id == "" {
 			writer.WriteHeader(404)
-			writer.Write([]byte("Неправильный запорс"))
+			writer.Write([]byte("Неправильный запрос"))
 			return
 		}
 		param = "&i=" + id
 	} else if by == "title" {
 		if title == "" {
 			writer.WriteHeader(404)
-			writer.Write([]byte("Неправильный запорс"))
+			writer.Write([]byte("Неправильный запрос"))
 			return
 		}
 		param = "&t=" + title
 	} else if by == "search" {
 		if s == "" {
 			writer.WriteHeader(404)
-			writer.Write([]byte("Неправильный запорс"))
+			writer.Write([]byte("Неправильный запрос"))
 			return
 		}
 		param = "&s=" + s
